@@ -123,7 +123,7 @@ and __ocaml_lex_minilisp_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
 # 16 "lexer.mll"
-               ( minilisp lexbuf )
+               ( (* remove white space *) )
 # 128 "lexer.ml"
 
   | 1 ->
@@ -133,7 +133,7 @@ let
 # 134 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 17 "lexer.mll"
-                   ( printf "NUMBER %s\n" inum; minilisp lexbuf )
+                   ( printf "NUMBER %s\n" inum)
 # 138 "lexer.ml"
 
   | 2 ->
@@ -143,17 +143,17 @@ let
 # 144 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 18 "lexer.mll"
-                              ( printf "NUMBER %s\n" fnum; minilisp lexbuf )
+                              ( printf "NUMBER %s\n" fnum )
 # 148 "lexer.ml"
 
   | 3 ->
 # 19 "lexer.mll"
-           ( printf "OPEN (\n"; minilisp lexbuf)
+           ( printf "OPEN (\n" )
 # 153 "lexer.ml"
 
   | 4 ->
 # 20 "lexer.mll"
-           ( printf "CLOSE )\n"; minilisp lexbuf )
+           ( printf "CLOSE )\n" )
 # 158 "lexer.ml"
 
   | 5 ->
@@ -163,7 +163,7 @@ let
 # 164 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 21 "lexer.mll"
-                 ( printf "SYMBOL %s\n" sb; minilisp lexbuf )
+                 ( printf "SYMBOL %s\n" sb )
 # 168 "lexer.ml"
 
   | 6 ->
@@ -173,7 +173,7 @@ let
 # 174 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 22 "lexer.mll"
-                 ( printf "STRING %s\n" st; minilisp lexbuf )
+                 ( printf "STRING %s\n" st )
 # 178 "lexer.ml"
 
   | 7 ->
@@ -197,6 +197,12 @@ let
 
 # 27 "lexer.mll"
  
+
+  let rec parse lexbuf =
+     let token = minilisp lexbuf in
+     (* do nothing in this example *)
+     parse lexbuf
+
   let main () =
     let cin =
       if Array.length Sys.argv > 1
@@ -204,8 +210,9 @@ let
       else stdin
     in
     let lexbuf = Lexing.from_channel cin in
-    minilisp lexbuf
+    try parse lexbuf
+    with End_of_file -> ()
 
   let _ = Printexc.print main ()
 
-# 212 "lexer.ml"
+# 219 "lexer.ml"
