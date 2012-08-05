@@ -1,24 +1,33 @@
 # 2 "lexer.mll"
  
+  open Parsing
   open Printf
 
-# 6 "lexer.ml"
+  type result = Int of int
+                | Float of float
+                | String of string
+                | Opener
+                | Closer
+                | Symbol of string
+                | EOF
+
+# 15 "lexer.ml"
 let __ocaml_lex_tables = {
   Lexing.lex_base = 
    "\000\000\247\255\248\255\001\000\090\000\251\255\252\255\018\000\
-    \255\255\028\000\249\255\002\000\004\000";
+    \004\000\028\000\249\255\002\000\004\000";
   Lexing.lex_backtrk = 
-   "\255\255\255\255\255\255\008\000\005\000\255\255\255\255\001\000\
-    \255\255\002\000\255\255\255\255\255\255";
+   "\000\000\255\255\255\255\008\000\005\000\255\255\255\255\001\000\
+    \000\000\002\000\255\255\255\255\255\255";
   Lexing.lex_default = 
    "\001\000\000\000\000\000\012\000\255\255\000\000\000\000\255\255\
-    \000\000\255\255\000\000\012\000\012\000";
+    \255\255\255\255\000\000\012\000\012\000";
   Lexing.lex_trans = 
    "\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-    \000\000\008\000\008\000\000\000\000\000\000\000\000\000\000\000\
+    \000\000\008\000\008\000\000\000\000\000\008\000\008\000\000\000\
     \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
-    \008\000\004\000\003\000\010\000\000\000\000\000\010\000\000\000\
+    \008\000\004\000\003\000\010\000\008\000\000\000\010\000\000\000\
     \006\000\005\000\004\000\004\000\000\000\004\000\000\000\004\000\
     \007\000\007\000\007\000\007\000\007\000\007\000\007\000\007\000\
     \007\000\007\000\000\000\000\000\004\000\004\000\004\000\004\000\
@@ -60,10 +69,10 @@ let __ocaml_lex_tables = {
     \000\000\000\000\000\000";
   Lexing.lex_check = 
    "\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
-    \255\255\000\000\000\000\255\255\255\255\255\255\255\255\255\255\
+    \255\255\000\000\000\000\255\255\255\255\008\000\008\000\255\255\
     \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
     \255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\255\
-    \000\000\000\000\000\000\003\000\255\255\255\255\012\000\255\255\
+    \000\000\000\000\000\000\003\000\008\000\255\255\012\000\255\255\
     \000\000\000\000\000\000\000\000\255\255\000\000\255\255\000\000\
     \000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\
     \000\000\000\000\255\255\255\255\000\000\000\000\000\000\000\000\
@@ -122,97 +131,76 @@ let rec minilisp lexbuf =
 and __ocaml_lex_minilisp_rec lexbuf __ocaml_lex_state =
   match Lexing.engine __ocaml_lex_tables __ocaml_lex_state lexbuf with
       | 0 ->
-# 16 "lexer.mll"
-               ( (* remove white space *) )
-# 128 "lexer.ml"
+# 25 "lexer.mll"
+               ( minilisp lexbuf (* remove white space *) )
+# 137 "lexer.ml"
 
   | 1 ->
 let
-# 17 "lexer.mll"
+# 26 "lexer.mll"
               inum
-# 134 "lexer.ml"
+# 143 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 17 "lexer.mll"
-                   ( printf "NUMBER %s\n" inum)
-# 138 "lexer.ml"
+# 26 "lexer.mll"
+                   ( Int (int_of_string inum) )
+# 147 "lexer.ml"
 
   | 2 ->
 let
-# 18 "lexer.mll"
+# 27 "lexer.mll"
                          fnum
-# 144 "lexer.ml"
+# 153 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 18 "lexer.mll"
-                              ( printf "NUMBER %s\n" fnum )
-# 148 "lexer.ml"
+# 27 "lexer.mll"
+                              ( Float (float_of_string fnum) )
+# 157 "lexer.ml"
 
   | 3 ->
-# 19 "lexer.mll"
-           ( printf "OPEN (\n" )
-# 153 "lexer.ml"
+# 28 "lexer.mll"
+           ( Opener )
+# 162 "lexer.ml"
 
   | 4 ->
-# 20 "lexer.mll"
-           ( printf "CLOSE )\n" )
-# 158 "lexer.ml"
+# 29 "lexer.mll"
+           ( Closer )
+# 167 "lexer.ml"
 
   | 5 ->
 let
-# 21 "lexer.mll"
+# 30 "lexer.mll"
               sb
-# 164 "lexer.ml"
+# 173 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 21 "lexer.mll"
-                 ( printf "SYMBOL %s\n" sb )
-# 168 "lexer.ml"
+# 30 "lexer.mll"
+                 ( Symbol sb )
+# 177 "lexer.ml"
 
   | 6 ->
 let
-# 22 "lexer.mll"
+# 31 "lexer.mll"
               st
-# 174 "lexer.ml"
+# 183 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
-# 22 "lexer.mll"
-                 ( printf "STRING %s\n" st )
-# 178 "lexer.ml"
+# 31 "lexer.mll"
+                 (  String st )
+# 187 "lexer.ml"
 
   | 7 ->
-# 23 "lexer.mll"
-        ( exit 0 )
-# 183 "lexer.ml"
+# 32 "lexer.mll"
+        ( EOF )
+# 192 "lexer.ml"
 
   | 8 ->
 let
-# 24 "lexer.mll"
+# 33 "lexer.mll"
          c
-# 189 "lexer.ml"
+# 198 "lexer.ml"
 = Lexing.sub_lexeme_char lexbuf lexbuf.Lexing.lex_start_pos in
-# 24 "lexer.mll"
-           ( printf "Parse Error %c\n" c )
-# 193 "lexer.ml"
+# 33 "lexer.mll"
+           ( printf "Parse Error %c\n" c ; raise End_of_file)
+# 202 "lexer.ml"
 
   | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_minilisp_rec lexbuf __ocaml_lex_state
 
 ;;
 
-# 27 "lexer.mll"
- 
-
-  let rec parse lexbuf =
-     let token = minilisp lexbuf in
-     (* do nothing in this example *)
-     parse lexbuf
-
-  let main () =
-    let cin =
-      if Array.length Sys.argv > 1
-      then open_in Sys.argv.(1)
-      else stdin
-    in
-    let lexbuf = Lexing.from_channel cin in
-    try parse lexbuf
-    with End_of_file -> ()
-
-  let _ = Printexc.print main ()
-
-# 219 "lexer.ml"
