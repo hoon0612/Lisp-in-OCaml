@@ -1,0 +1,35 @@
+OPEN (
+SYMBOL define
+OPEN (
+SYMBOL factorial
+SYMBOL n
+CLOSE )
+STRING "Calculates the factorial of the given number \"n\"."
+OPEN (
+SYMBOL if
+OPEN (
+SYMBOL =
+SYMBOL n
+NUMBER 1
+CLOSE )
+NUMBER 1
+OPEN (
+SYMBOL *
+SYMBOL n
+OPEN (
+SYMBOL factorial
+OPEN (
+SYMBOL -
+SYMBOL n
+NUMBER 1
+CLOSE )
+CLOSE )
+CLOSE )
+CLOSE )
+CLOSE )
+CLOSE )
+OPEN (
+SYMBOL factorial
+NUMBER 3
+CLOSE )
+STRING "string literal test: (factorial 10)"
