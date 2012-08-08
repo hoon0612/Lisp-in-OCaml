@@ -1,0 +1,61 @@
+{
+  "success": true,
+  "forms": [
+    {
+      "type": "list",
+      "list": [
+        {"type": "symbol", "symbol": "define"},
+        {
+          "type": "list",
+          "list": [
+            {"type": "symbol", "symbol": "factorial"},
+            {"type": "symbol", "symbol": "n"}
+          ]
+        },
+        {
+          "type": "list",
+          "list": [
+            {"type": "symbol", "symbol": "if"},
+            {
+              "type": "list",
+              "list": [
+                {"type": "symbol", "symbol": "="},
+                {"type": "symbol", "symbol": "n"},
+                {"type": "number", "number": 1}
+              ]
+            },
+            {"type": "number", "number": 1},
+            {
+              "type": "list",
+              "list": [
+                {"type": "symbol", "symbol": "*"},
+                {"type": "symbol", "symbol": "n"},
+                {
+                  "type": "list",
+                  "list": [
+                    {"type": "symbol", "symbol": "factorial"},
+                    {
+                      "type": "list",
+                      "list": [
+                        {"type": "symbol", "symbol": "-"},
+                        {"type": "symbol", "symbol": "n"},
+                        {"type": "number", "number": 1}
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "list",
+      "list": [
+        {"type": "symbol", "symbol": "factorial"},
+        {"type": "number", "number": 3}
+      ]
+    }
+  ]
+}
