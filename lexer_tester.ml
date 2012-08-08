@@ -1,31 +1,30 @@
-#use "lexer.ml"
-
+open Lexer
+  
 let print_token = function
-  | Int i-> print_endline ("NUMBER " ^ string_of_int i)
-  | Float f-> print_endline ("FLOAT " ^ string_of_float f)
-  | Opener -> print_endline ("OPEN " ^ "(")
-  | Closer -> print_endline ("CLOSE " ^ ")")
-  | Symbol s-> print_endline ("SYMBOL " ^ s)
-  | String s-> print_endline ("STRING " ^ s)
-  | EOF -> print_endline ("")
+  | Parser.Int i-> print_endline ("NUMBER " ^ string_of_int i)
+  | Parser.Float f-> print_endline ("FLOAT " ^ string_of_float f)
+  | Parser.Opener -> print_endline ("OPEN " ^ "(")
+  | Parser.Closer -> print_endline ("CLOSE " ^ ")")
+  | Parser.Symbol s-> print_endline ("SYMBOL " ^ s)
+  | Parser.String s-> print_endline ("STRING " ^ s)
+  | Parser.Quote -> print_endline ("QUOTE " ^ "\'")
 ;;
 
 let rec lexer lexbuf =
-  let token = minilisp lexbuf in
-  if token != EOF then
-    begin
-      print_token token;
-      lexer lexbuf;
-    end
+  let token = Lexer.minilisp lexbuf in
+  begin
+    print_token token;
+    lexer lexbuf;
+  end
 ;;
   
 let main () =
-  let cin = if Array.length Sys.argv > 1
-    then open_in Sys.argv.(1)
-    else stdin
-  in
-  let lexbuf = Lexing.from_channel cin in
-  lexer lexbuf
+  try
+    let lexbuf = Lexing.from_channel stdin in
+    lexer lexbuf
+  with
+    Lexer.Eof -> exit 0;
+  | _ -> exit 1;
 ;;
 
 let _ = Printexc.print main () ;;

@@ -1,15 +1,8 @@
 (* header section *)
 {
-  open Parsing
+  open Parser
   open Printf
-
-  type result = Int of int
-                | Float of float
-                | String of string
-                | Opener
-                | Closer
-                | Symbol of string
-                | EOF
+  exception Eof
 }
 
 (* definitions section *)
@@ -19,6 +12,7 @@ let opener  = '('
 let closer  = ')'
 let string  = '\"' ([^ '\\' '\"'] | '\\'_ )* '\"'
 let whitespace = (' ' | '\n' | '\t')*
+let quote = '\''
     
 (* rules section *)
 rule minilisp = parse
@@ -26,10 +20,10 @@ rule minilisp = parse
   | digit+ as inum { Int (int_of_string inum) }
   | digit+ '.' digit* as fnum { Float (float_of_string fnum) }
   | opener { Opener }
-  | closer { Closer } 
+  | closer { Closer }
+  | quote { Quote }
   | symbol as sb { Symbol sb }
-  | string as st {  String st }
-  | eof { EOF }
-  | _ as c { printf "Parse Error %c\n" c ; raise End_of_file}
+  | string as st { String st }
+  | eof { raise Eof }
 
 (* trailer section *)
