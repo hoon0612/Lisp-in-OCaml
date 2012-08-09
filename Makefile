@@ -6,6 +6,10 @@ INCLUDES=
 OCAMLFLAGS=$(INCLUDES) -g
 OCAMLOPTFLAGS=$(INCLUDES)
 
+LEXER_TESTCASES = 1 2
+PARSER_TESTCASES = 1 2 3
+PARSER_TESTCASES = 1 2 3 4 5 6 7
+
 MAIN_OBJS= lexer.cmo parser.cmo types.cmo main.cmo
 
 main: .depend $(MAIN_OBJS)
@@ -13,7 +17,7 @@ main: .depend $(MAIN_OBJS)
 
 lexer.ml: parser.cmo
 	ocamllex lexer.mll
-parser.ml:
+parser.ml: types.cmo
 	ocamlyacc parser.mly
 
 .SUFFIXES: .ml .mli .cmo .cmi
@@ -32,35 +36,47 @@ parser.ml:
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
 
-lexer_test: .depend lexer.mll lexer.cmo
-	@$(OCAML) lexer.cmo lexer_tester.ml < test_lexer_1.lisp > test1.tmp; \
-	if diff test_lexer_1.out test1.tmp; \
-	then echo "[+] Lexer Test 1 Success"; \
-	else echo "[-] Lexer Test 1 Failed"; \
-	fi
-
 test_all: lexer_test parser_test 
 
-parser_test: .depend parser.cmo lexer.cmo
-	@$(OCAML) parser.cmo lexer.cmo types.cmo parser_tester.ml < test_parser_1.lisp > test2.tmp; \
-	if diff test_parser_1.out test2.tmp; \
-	then echo "[+] Parser Test 1 Success"; \
-	else echo "[-] Parser Test 1 Failed"; \
-	fi
+lexer_test: .depend lexer.mll lexer.cmo
+	@mkdir tmp 2> /dev/null; \
+	for i in $(LEXER_TESTCASES); do \
+	$(OCAML) lexer.cmo lexer_tester.ml < test_cases/lexer/lexer-"$$i".lisp > tmp/lexer_test_"$$i".out; \
+	if diff test_cases/lexer/lexer-"$$i".txt tmp/lexer_test_"$$i".out; \
+	then echo "[+] Lexer Test $$i Success"; \
+	else echo "[-] Lexer Test $$i Failed"; \
+	fi; \
+	done
 
-parser_test2: .depend parser.cmo lexer.cmo
-	$(OCAML) parser.cmo lexer.cmo types.cmo parser_tester.ml < test_parser_2.lisp > test3.tmp;\
-	if diff test_parser_2.out test3.tmp; \
-	then echo "[+] Parser Test 2 Success"; \
-	else echo "[-] Parser Test 2 Failed"; \
-	fi
+parser_test: .depend parser.cmo lexer.cmo
+	@mkdir tmp 2> /dev/null; \
+	for i in $(PARSER_TESTCASES); do \
+	$(OCAML) parser.cmo lexer.cmo types.cmo parser_tester.ml \
+	< test_cases/parser/parser-"$$i".lisp > tmp/parser_test_"$$i"; \
+	if diff test_cases/parser/parser-"$$i".json tmp/parser_test_"$$i"; \
+	then echo "[+] Parser Test $$i Success"; \
+	else echo "[-] Parser Test $$i Failed"; \
+	fi; \
+	done
+
+eval_test: main
+	@mkdir tmp 2> /dev/null; \
+	for i in $(EVAL_TESTCASES); do \
+	./main < test_cases/eval/eval-"$$i".lisp > tmp/eval_test_"$$i"; \
+	if diff test_cases/eval/eval-"$$i".txt tmp/eval_test_"$$i"; \
+	then echo "[+] Eval Test $$i Success"; \
+	else echo "[-] Eval Test $$i Failed"; \
+	fi; \
+	done
 
 clean:
 	rm -f main
 	rm -f *~
 	rm -f lexer.ml parser.ml parser.mli
+	rm -f *.cm[iox]
 	rm -f test*.tmp
 	rm -f .depend
+	rm -rf tmp
 
 .depend:
 	$(OCAMLDEP) $(INCLUDES) *.mli *.ml *.mly *.mll > .depend
