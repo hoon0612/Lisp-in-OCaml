@@ -6,3 +6,6 @@ type s_exp =
 | Quote
 | Nil
 | Cons of s_exp * s_exp
+
+val listp: s_exp -> bool
+val string_of_s_exp: s_exp -> string 

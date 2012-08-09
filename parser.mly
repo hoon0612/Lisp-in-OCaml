@@ -14,13 +14,13 @@ pmain:
 ;
 
 s_exp_list:
- s_exp { $1 }
+ s_exp { Types.Cons($1, Types.Nil) }
  | s_exp s_exp_list { Types.Cons ($1, $2) }
 ;
 
 list:  
   Opener Closer { Types.Nil }
-| Opener s_exp_list Closer { Types.Cons ($2, Types.Nil) }
+| Opener s_exp_list Closer { $2 }
 ;
 
 number:
