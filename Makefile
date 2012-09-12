@@ -10,7 +10,7 @@ LEXER_TESTCASES = 1 2
 PARSER_TESTCASES = 1 2 3
 EVAL_TESTCASES = 1 2 3 4 5 6 7
 
-MAIN_OBJS= lexer.cmo parser.cmo types.cmo main.cmo
+MAIN_OBJS= lexer.cmo parser.cmo types.cmo environment.cmo builtin.cmo main.cmo
 
 main: .depend $(MAIN_OBJS)
 	$(OCAMLC) -o main $(OCAMLFLAGS) $(MAIN_OBJS)

@@ -13,7 +13,6 @@ let snd (_, y) = y;;
 
 let string_of_atom atype value n_indent =
   ((indent n_indent) ^ "{\"type\": \"" ^ atype ^ "\", \"" ^ atype ^ "\": " ^ value ^ "}")  
-                 
 let rec json_from_s_exp s_exp level in_list =
   begin
     match s_exp with

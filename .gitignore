@@ -1,0 +1,4 @@
+oclisp-0.5/*
+tmp/*
+*.cmo
+*.cmi

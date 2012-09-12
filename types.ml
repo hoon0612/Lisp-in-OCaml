@@ -12,7 +12,6 @@ let rec listp = function
   | Nil -> true
   | _ -> false
     
-    
 let rec string_of_s_exp = function
   | Int i -> string_of_int i
   | Float f -> string_of_float f
@@ -21,3 +20,6 @@ let rec string_of_s_exp = function
   | Nil -> "nil"
   | Quote -> "\'"
   | Cons(car, cdr) -> "( " ^ (string_of_s_exp car) ^ ", " ^ (string_of_s_exp cdr) ^ " )"
+
+exception Error of string
+        
