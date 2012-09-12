@@ -8,7 +8,7 @@ OCAMLOPTFLAGS=$(INCLUDES)
 
 LEXER_TESTCASES = 1 2
 PARSER_TESTCASES = 1 2 3
-EVAL_TESTCASES = 1 2 3 4 5 6 7
+EVAL_TESTCASES = 1 2 3
 
 MAIN_OBJS= lexer.cmo parser.cmo types.cmo environment.cmo builtin.cmo main.cmo
 
